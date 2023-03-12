@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Contact List Access Permission</title>
+    <title>Contact List Access</title>
 </head>
 <body>
-    <h1>Grant Contact List Access Permission</h1>
+    <h1>Grant Contact List Access</h1>
     <p>In order to use this app, we need permission to access your contact list. Please click the button below to grant permission.</p>
     <button id="grant-permission-btn">Grant Permission</button>
 
@@ -16,8 +16,14 @@
                 if (permissionStatus.state === 'prompt') {
                     permissionStatus.onchange = () => {
                         if (permissionStatus.state === 'granted') {
-                            // permission granted, continue with app logic
-                            alert('Permission granted. You can now use the app.');
+                            // permission granted, retrieve contact list
+                            navigator.contacts.select(['name', 'email']).then(contactList => {
+                                console.log('Contact list:', contactList);
+                                alert('Contact list retrieved successfully!');
+                            }).catch(error => {
+                                console.log(error);
+                                alert('Failed to retrieve contact list.');
+                            });
                         } else {
                             // permission denied, show error message
                             alert('Permission denied. The app cannot function without permission to access your contact list.');
@@ -25,8 +31,14 @@
                     }
                     permissionStatus.prompt();
                 } else if (permissionStatus.state === 'granted') {
-                    // permission already granted, continue with app logic
-                    alert('Permission already granted. You can now use the app.');
+                    // permission already granted, retrieve contact list
+                    navigator.contacts.select(['name', 'email']).then(contactList => {
+                        console.log('Contact list:', contactList);
+                        alert('Contact list retrieved successfully!');
+                    }).catch(error => {
+                        console.log(error);
+                        alert('Failed to retrieve contact list.');
+                    });
                 } else {
                     // permission denied, show error message
                     alert('Permission denied. The app cannot function without permission to access your contact list.');
@@ -36,6 +48,5 @@
             });
         });
     </script>
-<iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/live_yt_tv?autoplay=1" frameborder="0" allow="autoplay encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </body>
 </html>
